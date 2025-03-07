@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import ChatMessage from './ChatMessage';
 import ChatInput from './ChatInput';
 import { ChatMessage as ChatMessageType } from '../types/chatTypes';
-import { generateId, getInitialMessages, getBotResponse } from '../utils/chatUtils';
+import { formatDate, formatTimestamp, generateId, getInitialMessages, getBotResponse } from '../utils/chatUtils';
 import { toast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
 
@@ -35,10 +35,20 @@ const ChatContainer: React.FC = () => {
       id: generateId(),
       content,
       type: 'user',
-      timestamp: new Date()
+      timestamp: new Date(),
+      status: 'sent'
     };
     
     setMessages(prev => [...prev, userMessage]);
+    
+    // Update message status to "delivered" after a short delay
+    setTimeout(() => {
+      setMessages(prev => 
+        prev.map(msg => 
+          msg.id === userMessage.id ? { ...msg, status: 'delivered' } : msg
+        )
+      );
+    }, 500);
     
     // Add typing indicator
     const typingIndicatorId = generateId();
@@ -65,6 +75,15 @@ const ChatContainer: React.FC = () => {
           timestamp: new Date()
         })
       );
+      
+      // Mark user message as read
+      setTimeout(() => {
+        setMessages(prev => 
+          prev.map(msg => 
+            msg.id === userMessage.id ? { ...msg, status: 'read' } : msg
+          )
+        );
+      }, 1000);
     } catch (error) {
       // Remove typing indicator
       setMessages(prev => prev.filter(msg => msg.id !== typingIndicatorId));
@@ -88,6 +107,16 @@ const ChatContainer: React.FC = () => {
     }
   };
 
+  // Group messages by date for display
+  const groupedMessages = messages.reduce<Record<string, ChatMessageType[]>>((groups, message) => {
+    const dateKey = formatDate(message.timestamp);
+    if (!groups[dateKey]) {
+      groups[dateKey] = [];
+    }
+    groups[dateKey].push(message);
+    return groups;
+  }, {});
+
   return (
     <div 
       ref={containerRef}
@@ -97,9 +126,18 @@ const ChatContainer: React.FC = () => {
       )}
     >
       <div className="flex-1 overflow-y-auto py-4 scroll-smooth">
-        <div className="space-y-2">
-          {messages.map(message => (
-            <ChatMessage key={message.id} message={message} />
+        <div className="space-y-4">
+          {Object.entries(groupedMessages).map(([date, dateMessages]) => (
+            <div key={date} className="space-y-2">
+              <div className="flex justify-center my-4">
+                <div className="px-4 py-1 rounded-full bg-muted text-xs font-medium">
+                  {date}
+                </div>
+              </div>
+              {dateMessages.map(message => (
+                <ChatMessage key={message.id} message={message} />
+              ))}
+            </div>
           ))}
           <div ref={messagesEndRef} />
         </div>

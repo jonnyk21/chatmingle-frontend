@@ -13,6 +13,24 @@ export const formatTimestamp = (date: Date): string => {
   }).format(date);
 };
 
+export const formatDate = (date: Date): string => {
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  
+  if (date.toDateString() === today.toDateString()) {
+    return 'Today';
+  } else if (date.toDateString() === yesterday.toDateString()) {
+    return 'Yesterday';
+  } else {
+    return new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: today.getFullYear() !== date.getFullYear() ? 'numeric' : undefined
+    }).format(date);
+  }
+};
+
 export const getInitialMessages = (): ChatMessage[] => {
   return [
     {
@@ -27,7 +45,7 @@ export const getInitialMessages = (): ChatMessage[] => {
 // Simulates a bot response - in a real app, this would call an API
 export const getBotResponse = async (message: string): Promise<string> => {
   // Simulate network delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  await new Promise(resolve => setTimeout(resolve, 1500));
   
   const responses = [
     "I understand your question. Let me think about how best to help you with that.",

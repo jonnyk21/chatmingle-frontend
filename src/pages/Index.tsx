@@ -1,12 +1,20 @@
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ChatContainer from '../components/ChatContainer';
 import { cn } from '@/lib/utils';
+import { Moon, Sun } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const Index = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
   
   useEffect(() => {
+    // Check system preference for dark mode
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    setTheme(prefersDark ? 'dark' : 'light');
+    
+    // Handle resize for mobile vh
     const handleResize = () => {
       if (containerRef.current) {
         const vh = window.innerHeight * 0.01;
@@ -22,12 +30,22 @@ const Index = () => {
     };
   }, []);
 
+  useEffect(() => {
+    // Apply theme to document
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
+
   return (
     <div 
       ref={containerRef}
       className={cn(
         "min-h-screen h-screen flex flex-col",
-        "bg-background text-foreground overflow-hidden"
+        "bg-background text-foreground overflow-hidden",
+        "transition-colors duration-300 ease-in-out"
       )}
       style={{ 
         height: 'calc(var(--vh, 1vh) * 100)',
@@ -45,8 +63,18 @@ const Index = () => {
             />
             <h1 className="text-xl font-semibold bg-gradient-primary bg-clip-text text-transparent">ChatBot</h1>
           </div>
-          <div className="text-xs bg-gradient-primary text-white px-4 py-1.5 rounded-full font-medium">
-            AI Assistant
+          <div className="flex items-center space-x-3">
+            <div className="text-xs bg-gradient-primary text-white px-4 py-1.5 rounded-full font-medium">
+              AI Assistant
+            </div>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={toggleTheme}
+              className="rounded-full hover:bg-background/80"
+            >
+              {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+            </Button>
           </div>
         </div>
       </header>
