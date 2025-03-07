@@ -1,5 +1,5 @@
 
-import { ChatMessage } from '../types/chatTypes';
+import { ChatMessage, QuickReply, UserInfo } from '../types/chatTypes';
 
 export const generateId = (): string => {
   return Math.random().toString(36).substring(2, 11);
@@ -42,10 +42,63 @@ export const getInitialMessages = (): ChatMessage[] => {
   ];
 };
 
+// Get user information
+export const getUserInfo = (): UserInfo => {
+  return {
+    name: 'User',
+    avatar: '/user-avatar.png',
+    status: 'online'
+  };
+};
+
+// Get bot information
+export const getBotInfo = (): UserInfo => {
+  return {
+    name: 'AI Assistant',
+    avatar: '/logo.svg',
+    status: 'online'
+  };
+};
+
+// Get suggested quick replies
+export const getQuickReplies = (): QuickReply[] => {
+  return [
+    { id: generateId(), text: 'Tell me a joke' },
+    { id: generateId(), text: 'What can you do?' },
+    { id: generateId(), text: 'How does this work?' },
+    { id: generateId(), text: 'Help me with a task' }
+  ];
+};
+
+// Simulates fetching older messages
+export const fetchOlderMessages = async (): Promise<ChatMessage[]> => {
+  // Simulate network delay
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  
+  const oldDate = new Date();
+  oldDate.setDate(oldDate.getDate() - 1);
+  
+  return [
+    {
+      id: generateId(),
+      content: "Here are some older messages from yesterday.",
+      type: 'system',
+      timestamp: oldDate
+    },
+    {
+      id: generateId(),
+      content: "Is there anything specific you'd like to learn about today?",
+      type: 'bot',
+      timestamp: oldDate
+    }
+  ];
+};
+
 // Simulates a bot response - in a real app, this would call an API
 export const getBotResponse = async (message: string): Promise<string> => {
-  // Simulate network delay
-  await new Promise(resolve => setTimeout(resolve, 1500));
+  // Simulate network delay with variable timing for more realistic typing
+  const responseTime = 1500 + Math.random() * 2000;
+  await new Promise(resolve => setTimeout(resolve, responseTime));
   
   const responses = [
     "I understand your question. Let me think about how best to help you with that.",

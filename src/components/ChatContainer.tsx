@@ -1,17 +1,24 @@
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import ChatMessage from './ChatMessage';
 import ChatInput from './ChatInput';
+import QuickReplies from './QuickReplies';
 import { ChatMessage as ChatMessageType } from '../types/chatTypes';
-import { formatDate, formatTimestamp, generateId, getInitialMessages, getBotResponse } from '../utils/chatUtils';
+import { formatDate, formatTimestamp, generateId, getInitialMessages, getBotResponse, getQuickReplies, fetchOlderMessages } from '../utils/chatUtils';
 import { toast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
+import { ArrowDown, RefreshCcw } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const ChatContainer: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessageType[]>(getInitialMessages());
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingOlder, setIsLoadingOlder] = useState(false);
+  const [quickReplies, setQuickReplies] = useState(getQuickReplies());
+  const [showScrollBottom, setShowScrollBottom] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   
   const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
     messagesEndRef.current?.scrollIntoView({ behavior });
@@ -27,6 +34,48 @@ const ChatContainer: React.FC = () => {
     scrollToBottom();
   }, [messages]);
 
+  // Handle keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Alt+N for new message focus
+      if (e.altKey && e.key === 'n') {
+        const inputElement = document.querySelector('textarea') as HTMLTextAreaElement;
+        if (inputElement) {
+          e.preventDefault();
+          inputElement.focus();
+        }
+      }
+      
+      // Alt+S for scroll to bottom
+      if (e.altKey && e.key === 's') {
+        e.preventDefault();
+        scrollToBottom();
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+  // Add scroll event listener to show/hide scroll to bottom button
+  useEffect(() => {
+    const messagesContainer = messagesContainerRef.current;
+    if (!messagesContainer) return;
+    
+    const handleScroll = () => {
+      const { scrollTop, scrollHeight, clientHeight } = messagesContainer;
+      const isNearBottom = scrollHeight - scrollTop - clientHeight < 100;
+      setShowScrollBottom(!isNearBottom);
+    };
+    
+    messagesContainer.addEventListener('scroll', handleScroll);
+    return () => {
+      messagesContainer.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   const handleSendMessage = async (content: string) => {
     if (isLoading) return;
     
@@ -40,6 +89,9 @@ const ChatContainer: React.FC = () => {
     };
     
     setMessages(prev => [...prev, userMessage]);
+    
+    // Clear quick replies after user sends a message
+    setQuickReplies([]);
     
     // Update message status to "delivered" after a short delay
     setTimeout(() => {
@@ -84,6 +136,9 @@ const ChatContainer: React.FC = () => {
           )
         );
       }, 1000);
+      
+      // Show new quick replies after bot response
+      setQuickReplies(getQuickReplies());
     } catch (error) {
       // Remove typing indicator
       setMessages(prev => prev.filter(msg => msg.id !== typingIndicatorId));
@@ -107,6 +162,37 @@ const ChatContainer: React.FC = () => {
     }
   };
 
+  // Handle quick reply selection
+  const handleQuickReplySelect = (text: string) => {
+    handleSendMessage(text);
+  };
+
+  // Load older messages (pull-to-refresh)
+  const loadOlderMessages = async () => {
+    if (isLoadingOlder) return;
+    
+    setIsLoadingOlder(true);
+    try {
+      const olderMessages = await fetchOlderMessages();
+      
+      // Add system message to indicate loading older messages
+      setMessages(prev => [...olderMessages, ...prev]);
+      
+      toast({
+        title: "Success",
+        description: "Loaded older messages.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to load older messages.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoadingOlder(false);
+    }
+  };
+
   // Group messages by date for display
   const groupedMessages = messages.reduce<Record<string, ChatMessageType[]>>((groups, message) => {
     const dateKey = formatDate(message.timestamp);
@@ -125,7 +211,29 @@ const ChatContainer: React.FC = () => {
         "chat-container"
       )}
     >
-      <div className="flex-1 overflow-y-auto py-4 scroll-smooth">
+      <div 
+        ref={messagesContainerRef}
+        className="flex-1 overflow-y-auto py-4 scroll-smooth relative"
+      >
+        {isLoadingOlder ? (
+          <div className="flex justify-center py-4">
+            <div className="flex items-center space-x-2">
+              <RefreshCcw size={16} className="animate-spin" />
+              <span className="text-sm">Loading older messages...</span>
+            </div>
+          </div>
+        ) : (
+          <div 
+            className="flex justify-center py-4 cursor-pointer hover:bg-muted/30 rounded-full transition-colors mx-auto w-fit px-4"
+            onClick={loadOlderMessages}
+          >
+            <div className="flex items-center space-x-2">
+              <RefreshCcw size={16} />
+              <span className="text-sm">Load older messages</span>
+            </div>
+          </div>
+        )}
+        
         <div className="space-y-4">
           {Object.entries(groupedMessages).map(([date, dateMessages]) => (
             <div key={date} className="space-y-2">
@@ -141,13 +249,31 @@ const ChatContainer: React.FC = () => {
           ))}
           <div ref={messagesEndRef} />
         </div>
+        
+        {showScrollBottom && (
+          <Button
+            size="icon"
+            variant="secondary"
+            className="absolute bottom-4 right-4 rounded-full shadow-lg"
+            onClick={() => scrollToBottom()}
+          >
+            <ArrowDown size={18} />
+          </Button>
+        )}
       </div>
       
       <div className="pt-4 pb-2">
+        <QuickReplies 
+          replies={quickReplies} 
+          onSelect={handleQuickReplySelect} 
+        />
         <ChatInput 
           onSendMessage={handleSendMessage} 
           disabled={isLoading} 
         />
+        <div className="text-xs text-muted-foreground mt-2 text-center">
+          Keyboard shortcuts: Alt+N to focus input, Alt+S to scroll to bottom
+        </div>
       </div>
     </div>
   );

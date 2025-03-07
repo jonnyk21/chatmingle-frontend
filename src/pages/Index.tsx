@@ -1,13 +1,19 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import ChatContainer from '../components/ChatContainer';
+import ChatSearch from '../components/ChatSearch';
+import UserAvatar from '../components/UserAvatar';
 import { cn } from '@/lib/utils';
-import { Moon, Sun } from 'lucide-react';
+import { Moon, Sun, Menu, Info, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { getUserInfo, getBotInfo } from '../utils/chatUtils';
+import { toast } from '@/components/ui/use-toast';
 
 const Index = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [botInfo] = useState(getBotInfo());
+  const [userInfo] = useState(getUserInfo());
   
   useEffect(() => {
     // Check system preference for dark mode
@@ -39,6 +45,14 @@ const Index = () => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
   };
 
+  const handleSearch = (query: string) => {
+    // In a real app, this would search through messages
+    toast({
+      title: "Search",
+      description: `Searching for "${query}"...`,
+    });
+  };
+
   return (
     <div 
       ref={containerRef}
@@ -52,29 +66,49 @@ const Index = () => {
         backgroundImage: 'radial-gradient(circle at 100% 0%, hsl(var(--primary) / 0.07) 0%, transparent 70%), radial-gradient(circle at 0% 100%, hsl(var(--chatbot-accent) / 0.05) 0%, transparent 70%)'
       }}
     >
-      <header className="py-4 px-6 border-b border-border/40 backdrop-blur-md bg-background/80 glass">
+      <header className="py-3 px-4 sm:px-6 border-b border-border/40 backdrop-blur-md bg-background/80 glass">
         <div className="flex items-center justify-between max-w-4xl mx-auto">
           <div className="flex items-center space-x-3">
-            <img 
-              src="/logo.svg" 
-              alt="Chat Logo" 
-              className="w-10 h-10 animate-float" 
-              loading="lazy"
-            />
-            <h1 className="text-xl font-semibold bg-gradient-primary bg-clip-text text-transparent">ChatBot</h1>
-          </div>
-          <div className="flex items-center space-x-3">
-            <div className="text-xs bg-gradient-primary text-white px-4 py-1.5 rounded-full font-medium">
-              AI Assistant
+            <div className="flex items-center">
+              <UserAvatar user={botInfo} size="md" />
+              <div className="ml-3">
+                <h1 className="text-lg font-semibold bg-gradient-primary bg-clip-text text-transparent">ChatBot</h1>
+                <div className="text-xs text-muted-foreground">AI Assistant</div>
+              </div>
             </div>
+          </div>
+          
+          <div className="flex items-center space-x-2">
+            <ChatSearch onSearch={handleSearch} />
+            
             <Button 
               variant="ghost" 
               size="icon" 
               onClick={toggleTheme}
               className="rounded-full hover:bg-background/80"
             >
-              {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+              {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
             </Button>
+            
+            <Button 
+              variant="ghost" 
+              size="icon"
+              className="rounded-full hover:bg-background/80"
+            >
+              <Info size={18} />
+            </Button>
+            
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full hover:bg-background/80"
+            >
+              <Menu size={18} />
+            </Button>
+            
+            <div className="hidden sm:block">
+              <UserAvatar user={userInfo} size="sm" />
+            </div>
           </div>
         </div>
       </header>
