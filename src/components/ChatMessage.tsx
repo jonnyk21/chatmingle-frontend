@@ -31,17 +31,17 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
       >
         <div 
           className={cn(
-            "px-4 py-3 rounded-2xl max-w-[80%] shadow-sm",
+            "px-4 py-3 rounded-2xl max-w-[80%] shadow-md",
             isUser 
-              ? "bg-chatbot-user text-foreground ml-12 rounded-tr-none" 
-              : "bg-chatbot-bot glass rounded-tl-none mr-12",
+              ? "message-user ml-12 rounded-tr-none" 
+              : "message-bot rounded-tl-none mr-12",
             "animate-pulse-subtle"
           )}
         >
           <div className="flex space-x-2">
-            <div className="w-2 h-2 rounded-full bg-foreground/40 animate-pulse"></div>
-            <div className="w-2 h-2 rounded-full bg-foreground/40 animate-pulse delay-100"></div>
-            <div className="w-2 h-2 rounded-full bg-foreground/40 animate-pulse delay-200"></div>
+            <div className="w-2 h-2 rounded-full bg-primary/60 animate-pulse"></div>
+            <div className="w-2 h-2 rounded-full bg-primary/60 animate-pulse delay-100"></div>
+            <div className="w-2 h-2 rounded-full bg-primary/60 animate-pulse delay-200"></div>
           </div>
         </div>
       </div>
@@ -52,7 +52,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
   if (isSystem) {
     return (
       <div ref={messageRef} className="flex justify-center my-4 animate-fade-in">
-        <div className="px-4 py-2 rounded-full bg-muted text-muted-foreground text-sm">
+        <div className="px-5 py-2.5 rounded-full bg-gradient-accent text-white text-sm font-medium shadow-md">
           {message.content}
         </div>
       </div>
@@ -72,15 +72,15 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
     >
       <div 
         className={cn(
-          "px-4 py-3 rounded-2xl max-w-[80%] shadow-sm transition-all duration-300",
+          "px-5 py-3.5 rounded-2xl max-w-[80%] shadow-md transition-all duration-300",
           isUser 
-            ? "bg-chatbot-user text-foreground ml-12 rounded-tr-none" 
-            : "bg-chatbot-bot glass rounded-tl-none mr-12"
+            ? "message-user ml-12 rounded-tr-none" 
+            : "message-bot rounded-tl-none mr-12"
         )}
       >
-        <p className="text-balance">{message.content}</p>
+        <p className="text-balance leading-relaxed">{message.content}</p>
         <div className={cn(
-          "text-xs mt-1 opacity-70",
+          "text-xs mt-1.5 opacity-70 font-medium",
           isUser ? "text-right" : "text-left"
         )}>
           {formatTimestamp(message.timestamp)}

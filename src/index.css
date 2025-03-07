@@ -6,7 +6,7 @@
 @layer base {
   :root {
     /* Base */
-    --background: 210 20% 98%;
+    --background: 222 50% 98%;
     --foreground: 222 47% 11%;
     
     /* Card */
@@ -18,21 +18,21 @@
     --popover-foreground: 222 47% 11%;
     
     /* Standard UI */
-    --primary: 222 47% 11%;
+    --primary: 262 83% 58%;
     --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96%;
+    --secondary: 204 94% 94%;
     --secondary-foreground: 222 47% 11%;
     --muted: 210 40% 96%;
     --muted-foreground: 215 16% 47%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222 47% 11%;
+    --accent: 262 83% 58%;
+    --accent-foreground: 210 40% 98%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
     
     /* Border, Input, Ring */
     --border: 214 32% 91%;
     --input: 214 32% 91%;
-    --ring: 222 84% 5%;
+    --ring: 262 83% 58%;
     
     /* Sidebar */
     --sidebar-background: 0 0% 98%;
@@ -45,15 +45,15 @@
     --sidebar-ring: 217 91% 60%;
 
     /* Chatbot Specific */
-    --chatbot-primary: 210 100% 50%;
-    --chatbot-secondary: 200 85% 54%;
-    --chatbot-accent: 210 100% 60%;
+    --chatbot-primary: 262 83% 58%;
+    --chatbot-secondary: 200 97% 63%;
+    --chatbot-accent: 326 100% 74%;
     --chatbot-muted: 210 40% 96%;
-    --chatbot-user: 210 100% 95%;
+    --chatbot-user: 290 70% 97%;
     --chatbot-bot: 0 0% 100%;
     
     /* Radius */
-    --radius: 0.5rem;
+    --radius: 1rem;
   }
 
   .dark {
@@ -66,8 +66,8 @@
     --popover: 222 47% 11%;
     --popover-foreground: 210 40% 98%;
     
-    --primary: 210 40% 98%;
-    --primary-foreground: 222 47% 11%;
+    --primary: 262 83% 58%;
+    --primary-foreground: 210 40% 98%;
     
     --secondary: 217 33% 18%;
     --secondary-foreground: 210 40% 98%;
@@ -75,7 +75,7 @@
     --muted: 217 33% 18%;
     --muted-foreground: 215 20% 65%;
     
-    --accent: 217 33% 18%;
+    --accent: 262 83% 58%;
     --accent-foreground: 210 40% 98%;
     
     --destructive: 0 63% 31%;
@@ -83,7 +83,7 @@
     
     --border: 217 33% 18%;
     --input: 217 33% 18%;
-    --ring: 213 27% 84%;
+    --ring: 262 83% 58%;
 
     --sidebar-background: 240 6% 10%;
     --sidebar-foreground: 240 5% 96%;
@@ -95,11 +95,11 @@
     --sidebar-ring: 217 91% 60%;
 
     /* Chatbot Specific */
-    --chatbot-primary: 210 100% 50%;
-    --chatbot-secondary: 200 85% 54%;
-    --chatbot-accent: 222 89% 65%;
+    --chatbot-primary: 262 83% 58%;
+    --chatbot-secondary: 200 97% 63%;
+    --chatbot-accent: 326 100% 74%;
     --chatbot-muted: 217 33% 18%;
-    --chatbot-user: 210 100% 15%;
+    --chatbot-user: 290 70% 20%;
     --chatbot-bot: 222 47% 15%;
   }
 }
@@ -139,7 +139,7 @@
     background-image: radial-gradient(
       circle at 10% 20%,
       hsl(var(--background)) 0%,
-      hsl(var(--background) / 0.98) 100%
+      hsl(var(--background) / 0.9) 100%
     );
   }
 
@@ -162,5 +162,23 @@
 
   .text-balance {
     text-wrap: balance;
+  }
+  
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--chatbot-primary)), hsl(var(--chatbot-secondary)));
+  }
+  
+  .bg-gradient-accent {
+    background: linear-gradient(135deg, hsl(var(--chatbot-secondary)), hsl(var(--chatbot-accent)));
+  }
+  
+  .message-user {
+    background: linear-gradient(135deg, hsl(var(--primary) / 0.1), hsl(var(--chatbot-accent) / 0.2));
+    border: 1px solid hsl(var(--primary) / 0.1);
+  }
+  
+  .message-bot {
+    background: linear-gradient(135deg, hsl(var(--card)), hsl(var(--secondary) / 0.5));
+    border: 1px solid hsl(var(--border) / 0.7);
   }
 }

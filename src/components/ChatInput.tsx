@@ -60,8 +60,8 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, disabled = false }
   return (
     <div className="relative">
       <div className={cn(
-        "relative flex items-end bg-background/80 rounded-2xl p-2",
-        "glass transition-all duration-300 border border-border/80",
+        "relative flex items-end rounded-2xl p-2",
+        "glass transition-all duration-300 border-2 border-primary/10",
         disabled ? "opacity-70" : "glass-hover"
       )}>
         <textarea
@@ -72,8 +72,8 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, disabled = false }
           placeholder="Type a message..."
           disabled={disabled}
           className={cn(
-            "flex-1 bg-transparent border-0 outline-none resize-none py-2 px-3 max-h-[150px]",
-            "placeholder:text-muted-foreground focus:ring-0 text-base"
+            "flex-1 bg-transparent border-0 outline-none resize-none py-3 px-3 max-h-[150px]",
+            "placeholder:text-muted-foreground focus:ring-0 text-base rounded-xl"
           )}
           rows={1}
         />
@@ -89,7 +89,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, disabled = false }
             )}
             disabled={disabled}
           >
-            {isRecording ? <MicOff size={20} /> : <Mic size={20} />}
+            {isRecording ? <MicOff size={20} className="animate-pulse" /> : <Mic size={20} />}
           </Button>
           
           <Button 
@@ -97,7 +97,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, disabled = false }
             size="icon"
             className={cn(
               "rounded-full transition-all duration-300",
-              "bg-chatbot-primary text-primary-foreground hover:bg-chatbot-primary/90",
+              "bg-gradient-primary hover:shadow-md text-white",
               !message.trim() && "opacity-70 pointer-events-none"
             )}
             disabled={!message.trim() || disabled}
