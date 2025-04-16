@@ -43,11 +43,11 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-center justify-between p-3">
-        <h2 className="text-sm font-semibold text-sidebar-foreground">Chat History</h2>
+        <h2 className="text-sm font-semibold text-foreground">Chat History</h2>
         <Button 
           size="sm" 
           variant="outline" 
-          className="h-8 px-2 bg-sidebar-accent" 
+          className="h-8 px-2 bg-primary/10 hover:bg-primary/20" 
           onClick={onNewChat}
         >
           <Plus size={16} className="mr-1" /> New Chat
@@ -69,7 +69,10 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
                   isActive={chat.isActive}
                   onClick={() => onSelectChat(chat.id)}
                   tooltip="Open chat"
-                  className="w-full"
+                  className={cn(
+                    "w-full transition-all",
+                    chat.isActive ? "bg-primary/10 text-foreground" : "hover:bg-background/80"
+                  )}
                 >
                   <MessageSquare size={16} />
                   <span>{chat.title}</span>

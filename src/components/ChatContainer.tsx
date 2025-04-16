@@ -207,7 +207,7 @@ const ChatContainer: React.FC = () => {
     <div 
       ref={containerRef}
       className={cn(
-        "flex flex-col h-full max-w-4xl mx-auto p-4",
+        "flex flex-col h-full max-w-6xl mx-auto p-4",
         "chat-container"
       )}
     >

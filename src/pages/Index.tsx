@@ -71,9 +71,9 @@ const Index = () => {
       >
         <ChatSidebar />
         <SidebarRail />
-        <SidebarInset>
+        <SidebarInset className="px-0">
           <header className="py-3 px-4 sm:px-6 border-b border-border/40 backdrop-blur-md bg-background/80 glass">
-            <div className="flex items-center justify-between max-w-4xl mx-auto">
+            <div className="flex items-center justify-between max-w-6xl mx-auto">
               <div className="flex items-center space-x-3">
                 <SidebarTrigger className="md:mr-2" />
                 <div className="flex items-center">

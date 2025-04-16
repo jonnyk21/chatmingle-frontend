@@ -37,10 +37,11 @@ const ChatSidebar: React.FC = () => {
   };
 
   return (
-    <Sidebar>
-      <SidebarHeader>
-        <div className="p-2">
-          <h1 className="text-lg font-semibold text-sidebar-foreground">ChatBot</h1>
+    <Sidebar className="bg-background border-r border-border/40 shadow-sm">
+      <SidebarHeader className="bg-background/80 backdrop-blur-md border-b border-border/40">
+        <div className="p-3">
+          <h1 className="text-lg font-semibold bg-gradient-to-r from-primary to-primary-foreground bg-clip-text text-transparent tracking-tight">ChatBot</h1>
+          <p className="text-xs text-muted-foreground">AI Assistant</p>
         </div>
       </SidebarHeader>
       
@@ -57,7 +58,7 @@ const ChatSidebar: React.FC = () => {
       
       <SidebarSeparator />
       
-      <SidebarFooter>
+      <SidebarFooter className="border-t border-border/40 bg-background/80 backdrop-blur-md">
         <div className="p-3 grid grid-cols-3 gap-2">
           <Button variant="ghost" size="sm" className="flex flex-col items-center h-auto py-2 text-xs">
             <Settings size={18} className="mb-1" />
