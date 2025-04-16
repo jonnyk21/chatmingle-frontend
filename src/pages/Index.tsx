@@ -72,8 +72,15 @@ const Index = () => {
             <div className="flex items-center">
               <UserAvatar user={botInfo} size="md" />
               <div className="ml-3">
-                <h1 className="text-lg font-semibold bg-gradient-primary bg-clip-text text-transparent">ChatBot</h1>
-                <div className="text-xs text-muted-foreground">AI Assistant</div>
+                <h1 className={cn(
+                  "text-lg font-bold",
+                  "bg-gradient-to-r from-primary to-primary-foreground",
+                  "bg-clip-text text-transparent",
+                  "tracking-tight leading-tight"
+                )}>
+                  ChatBot
+                </h1>
+                <div className="text-xs text-muted-foreground font-medium">AI Assistant</div>
               </div>
             </div>
           </div>
