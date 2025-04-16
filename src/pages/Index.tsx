@@ -8,6 +8,8 @@ import { Moon, Sun, Menu, Info, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getUserInfo, getBotInfo } from '../utils/chatUtils';
 import { toast } from '@/components/ui/use-toast';
+import { SidebarProvider, SidebarTrigger, SidebarRail, SidebarInset } from '@/components/ui/sidebar';
+import ChatSidebar from '../components/ChatSidebar';
 
 const Index = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -54,76 +56,83 @@ const Index = () => {
   };
 
   return (
-    <div 
-      ref={containerRef}
-      className={cn(
-        "min-h-screen h-screen flex flex-col",
-        "bg-background text-foreground overflow-hidden",
-        "transition-colors duration-300 ease-in-out"
-      )}
-      style={{ 
-        height: 'calc(var(--vh, 1vh) * 100)',
-        backgroundImage: 'radial-gradient(circle at 100% 0%, hsl(var(--primary) / 0.07) 0%, transparent 70%), radial-gradient(circle at 0% 100%, hsl(var(--chatbot-accent) / 0.05) 0%, transparent 70%)'
-      }}
-    >
-      <header className="py-3 px-4 sm:px-6 border-b border-border/40 backdrop-blur-md bg-background/80 glass">
-        <div className="flex items-center justify-between max-w-4xl mx-auto">
-          <div className="flex items-center space-x-3">
-            <div className="flex items-center">
-              <UserAvatar user={botInfo} size="md" />
-              <div className="ml-3">
-                <h1 className={cn(
-                  "text-lg font-bold",
-                  "bg-gradient-to-r from-primary to-primary-foreground",
-                  "bg-clip-text text-transparent",
-                  "tracking-tight leading-tight"
-                )}>
-                  ChatBot
-                </h1>
-                <div className="text-xs text-muted-foreground font-medium">AI Assistant</div>
+    <SidebarProvider defaultOpen={false}>
+      <div 
+        ref={containerRef}
+        className={cn(
+          "min-h-screen h-screen flex w-full",
+          "bg-background text-foreground overflow-hidden",
+          "transition-colors duration-300 ease-in-out"
+        )}
+        style={{ 
+          height: 'calc(var(--vh, 1vh) * 100)',
+          backgroundImage: 'radial-gradient(circle at 100% 0%, hsl(var(--primary) / 0.07) 0%, transparent 70%), radial-gradient(circle at 0% 100%, hsl(var(--chatbot-accent) / 0.05) 0%, transparent 70%)'
+        }}
+      >
+        <ChatSidebar />
+        <SidebarRail />
+        <SidebarInset>
+          <header className="py-3 px-4 sm:px-6 border-b border-border/40 backdrop-blur-md bg-background/80 glass">
+            <div className="flex items-center justify-between max-w-4xl mx-auto">
+              <div className="flex items-center space-x-3">
+                <SidebarTrigger className="md:mr-2" />
+                <div className="flex items-center">
+                  <UserAvatar user={botInfo} size="md" />
+                  <div className="ml-3">
+                    <h1 className={cn(
+                      "text-lg font-bold",
+                      "bg-gradient-to-r from-primary to-primary-foreground",
+                      "bg-clip-text text-transparent",
+                      "tracking-tight leading-tight"
+                    )}>
+                      ChatBot
+                    </h1>
+                    <div className="text-xs text-muted-foreground font-medium">AI Assistant</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <ChatSearch onSearch={handleSearch} />
+                
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={toggleTheme}
+                  className="rounded-full hover:bg-background/80"
+                >
+                  {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+                </Button>
+                
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  className="rounded-full hover:bg-background/80"
+                >
+                  <Info size={18} />
+                </Button>
+                
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full hover:bg-background/80"
+                >
+                  <Menu size={18} />
+                </Button>
+                
+                <div className="hidden sm:block">
+                  <UserAvatar user={userInfo} size="sm" />
+                </div>
               </div>
             </div>
-          </div>
+          </header>
           
-          <div className="flex items-center space-x-2">
-            <ChatSearch onSearch={handleSearch} />
-            
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={toggleTheme}
-              className="rounded-full hover:bg-background/80"
-            >
-              {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
-            </Button>
-            
-            <Button 
-              variant="ghost" 
-              size="icon"
-              className="rounded-full hover:bg-background/80"
-            >
-              <Info size={18} />
-            </Button>
-            
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-full hover:bg-background/80"
-            >
-              <Menu size={18} />
-            </Button>
-            
-            <div className="hidden sm:block">
-              <UserAvatar user={userInfo} size="sm" />
-            </div>
-          </div>
-        </div>
-      </header>
-      
-      <main className="flex-1 overflow-hidden">
-        <ChatContainer />
-      </main>
-    </div>
+          <main className="flex-1 overflow-hidden">
+            <ChatContainer />
+          </main>
+        </SidebarInset>
+      </div>
+    </SidebarProvider>
   );
 };
 
