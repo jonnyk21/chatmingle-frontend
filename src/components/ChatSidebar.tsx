@@ -5,10 +5,14 @@ import {
   SidebarContent, 
   SidebarFooter, 
   SidebarHeader,
-  SidebarSeparator
+  SidebarSeparator,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
-import { HelpCircle, Info, Settings } from 'lucide-react';
+import { HelpCircle, Info, MessageSquare, Plus, Settings, Trash2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import ChatHistory, { ChatHistoryItem } from './ChatHistory';
 
 // Mock chat history data (in a real app, this would come from a state or API)
@@ -37,23 +41,48 @@ const ChatSidebar: React.FC = () => {
   };
 
   return (
-    <Sidebar className="bg-background border-r border-border/40 shadow-sm">
+    <Sidebar className="bg-background/95 backdrop-blur-sm border-r border-border/40 shadow-md">
       <SidebarHeader className="bg-background/80 backdrop-blur-md border-b border-border/40">
-        <div className="p-3">
-          <h1 className="text-lg font-semibold bg-gradient-to-r from-primary to-primary-foreground bg-clip-text text-transparent tracking-tight">ChatBot</h1>
+        <div className="p-4 pb-3">
+          <h1 className="text-xl font-semibold bg-gradient-to-r from-primary to-primary-foreground bg-clip-text text-transparent tracking-tight">ChatBot</h1>
           <p className="text-xs text-muted-foreground">AI Assistant</p>
         </div>
       </SidebarHeader>
       
-      <SidebarSeparator />
-      
-      <SidebarContent>
-        <ChatHistory 
-          chats={mockChats} 
-          onSelectChat={handleSelectChat}
-          onNewChat={handleNewChat}
-          onDeleteChat={handleDeleteChat}
-        />
+      <SidebarContent className="px-2">
+        <div className="flex items-center justify-between p-3">
+          <h2 className="text-sm font-semibold text-foreground">Chat History</h2>
+          <Button 
+            size="sm" 
+            variant="outline" 
+            className="h-8 px-2 bg-primary/10 hover:bg-primary/20 text-primary-foreground" 
+            onClick={handleNewChat}
+          >
+            <Plus size={16} className="mr-1" /> New Chat
+          </Button>
+        </div>
+        
+        <div className="overflow-y-auto px-2 pb-4">
+          <SidebarMenu>
+            {mockChats.map((chat) => (
+              <SidebarMenuItem key={chat.id} className="mb-1">
+                <SidebarMenuButton
+                  isActive={chat.isActive}
+                  onClick={() => handleSelectChat(chat.id)}
+                  className={cn(
+                    "w-full transition-all gap-3 rounded-md",
+                    chat.isActive 
+                      ? "bg-primary/15 text-primary-foreground" 
+                      : "hover:bg-background/80 hover:bg-primary/10"
+                  )}
+                >
+                  <MessageSquare size={16} />
+                  <span className="truncate">{chat.title}</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </div>
       </SidebarContent>
       
       <SidebarSeparator />
