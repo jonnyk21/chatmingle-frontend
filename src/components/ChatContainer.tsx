@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import ChatMessage from './ChatMessage';
 import ChatInput from './ChatInput';
@@ -9,6 +8,9 @@ import { toast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
 import { ArrowDown, RefreshCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import FileUpload from './FileUpload';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Upload } from 'lucide-react';
 
 const ChatContainer: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessageType[]>(getInitialMessages());
@@ -25,19 +27,15 @@ const ChatContainer: React.FC = () => {
   };
 
   useEffect(() => {
-    // Scroll to bottom on initial render
     scrollToBottom('auto');
   }, []);
 
   useEffect(() => {
-    // Scroll to bottom when messages change
     scrollToBottom();
   }, [messages]);
 
-  // Handle keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Alt+N for new message focus
       if (e.altKey && e.key === 'n') {
         const inputElement = document.querySelector('textarea') as HTMLTextAreaElement;
         if (inputElement) {
@@ -46,7 +44,6 @@ const ChatContainer: React.FC = () => {
         }
       }
       
-      // Alt+S for scroll to bottom
       if (e.altKey && e.key === 's') {
         e.preventDefault();
         scrollToBottom();
@@ -59,7 +56,6 @@ const ChatContainer: React.FC = () => {
     };
   }, []);
 
-  // Add scroll event listener to show/hide scroll to bottom button
   useEffect(() => {
     const messagesContainer = messagesContainerRef.current;
     if (!messagesContainer) return;
@@ -79,7 +75,6 @@ const ChatContainer: React.FC = () => {
   const handleSendMessage = async (content: string) => {
     if (isLoading) return;
     
-    // Add user message
     const userMessage: ChatMessageType = {
       id: generateId(),
       content,
@@ -90,10 +85,8 @@ const ChatContainer: React.FC = () => {
     
     setMessages(prev => [...prev, userMessage]);
     
-    // Clear quick replies after user sends a message
     setQuickReplies([]);
     
-    // Update message status to "delivered" after a short delay
     setTimeout(() => {
       setMessages(prev => 
         prev.map(msg => 
@@ -102,7 +95,6 @@ const ChatContainer: React.FC = () => {
       );
     }, 500);
     
-    // Add typing indicator
     const typingIndicatorId = generateId();
     setMessages(prev => [...prev, {
       id: typingIndicatorId,
@@ -115,10 +107,8 @@ const ChatContainer: React.FC = () => {
     setIsLoading(true);
     
     try {
-      // Get bot response
       const responseText = await getBotResponse(content);
       
-      // Remove typing indicator and add bot response
       setMessages(prev => 
         prev.filter(msg => msg.id !== typingIndicatorId).concat({
           id: generateId(),
@@ -128,7 +118,6 @@ const ChatContainer: React.FC = () => {
         })
       );
       
-      // Mark user message as read
       setTimeout(() => {
         setMessages(prev => 
           prev.map(msg => 
@@ -137,20 +126,16 @@ const ChatContainer: React.FC = () => {
         );
       }, 1000);
       
-      // Show new quick replies after bot response
       setQuickReplies(getQuickReplies());
     } catch (error) {
-      // Remove typing indicator
       setMessages(prev => prev.filter(msg => msg.id !== typingIndicatorId));
       
-      // Add error message
       toast({
         title: "Error",
         description: "Failed to get response. Please try again.",
         variant: "destructive"
       });
       
-      // Add system message
       setMessages(prev => [...prev, {
         id: generateId(),
         content: "There was an error processing your request.",
@@ -162,12 +147,10 @@ const ChatContainer: React.FC = () => {
     }
   };
 
-  // Handle quick reply selection
   const handleQuickReplySelect = (text: string) => {
     handleSendMessage(text);
   };
 
-  // Load older messages (pull-to-refresh)
   const loadOlderMessages = async () => {
     if (isLoadingOlder) return;
     
@@ -175,7 +158,6 @@ const ChatContainer: React.FC = () => {
     try {
       const olderMessages = await fetchOlderMessages();
       
-      // Add system message to indicate loading older messages
       setMessages(prev => [...olderMessages, ...prev]);
       
       toast({
@@ -193,7 +175,6 @@ const ChatContainer: React.FC = () => {
     }
   };
 
-  // Group messages by date for display
   const groupedMessages = messages.reduce<Record<string, ChatMessageType[]>>((groups, message) => {
     const dateKey = formatDate(message.timestamp);
     if (!groups[dateKey]) {
@@ -203,6 +184,13 @@ const ChatContainer: React.FC = () => {
     return groups;
   }, {});
 
+  const handleFileUpload = (files: File[]) => {
+    toast({
+      title: "Files uploaded",
+      description: `${files.length} files will be processed for context`,
+    });
+  };
+
   return (
     <div 
       ref={containerRef}
@@ -211,6 +199,28 @@ const ChatContainer: React.FC = () => {
         "chat-container"
       )}
     >
+      <div className="flex items-center justify-end mb-4">
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="outline" className="gap-2">
+              <Upload className="h-4 w-4" />
+              Upload Documents
+            </Button>
+          </SheetTrigger>
+          <SheetContent className="w-[400px] sm:w-[540px] p-6">
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-lg font-semibold mb-2">Upload Documents</h2>
+                <p className="text-sm text-muted-foreground">
+                  Upload documents to provide context for the AI responses. Supported formats: PDF, TXT, DOC, DOCX
+                </p>
+              </div>
+              <FileUpload onUpload={handleFileUpload} />
+            </div>
+          </SheetContent>
+        </Sheet>
+      </div>
+
       <div 
         ref={messagesContainerRef}
         className="flex-1 overflow-y-auto py-4 scroll-smooth relative"
