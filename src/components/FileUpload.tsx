@@ -5,7 +5,6 @@ import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
 import { toast } from '@/components/ui/use-toast';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
@@ -95,7 +94,6 @@ const FileUpload: React.FC<FileUploadProps> = ({
       return;
     }
 
-    // Simulate upload progress
     let progress = 0;
     const interval = setInterval(() => {
       progress += 10;
@@ -112,15 +110,19 @@ const FileUpload: React.FC<FileUploadProps> = ({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Collection Name</FormLabel>
+              <FormLabel className="text-base">Collection Name</FormLabel>
               <FormControl>
-                <Input placeholder="Enter collection name" {...field} />
+                <Input 
+                  placeholder="Enter collection name" 
+                  {...field}
+                  className="transition-all duration-200 focus:scale-[1.01]"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -132,11 +134,11 @@ const FileUpload: React.FC<FileUploadProps> = ({
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Description (optional)</FormLabel>
+              <FormLabel className="text-base">Description (optional)</FormLabel>
               <FormControl>
                 <Textarea 
                   placeholder="Describe what this collection contains..."
-                  className="resize-none"
+                  className="resize-none min-h-[100px] transition-all duration-200 focus:scale-[1.01]"
                   {...field}
                 />
               </FormControl>
@@ -150,19 +152,25 @@ const FileUpload: React.FC<FileUploadProps> = ({
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
           className={cn(
-            "border-2 border-dashed rounded-lg p-8",
-            "transition-all duration-200 ease-in-out",
-            "flex flex-col items-center justify-center gap-4",
-            isDragging ? "border-primary bg-primary/5" : "border-border",
-            "hover:border-primary/50 hover:bg-accent/50"
+            "border-2 border-dashed rounded-xl p-10",
+            "transition-all duration-300 ease-in-out",
+            "flex flex-col items-center justify-center gap-6",
+            isDragging 
+              ? "border-primary bg-primary/5 scale-[1.02] shadow-lg" 
+              : "border-border hover:border-primary/50 hover:bg-accent/50 hover:scale-[1.01]"
           )}
         >
-          <div className="flex flex-col items-center gap-2 text-center">
-            <Upload className="h-10 w-10 text-muted-foreground" />
-            <div className="text-xl font-medium">Drop files here</div>
-            <p className="text-sm text-muted-foreground">
-              or click to select files
-            </p>
+          <div className="flex flex-col items-center gap-4 text-center">
+            <Upload className={cn(
+              "h-12 w-12 transition-all duration-300",
+              isDragging ? "text-primary scale-110" : "text-muted-foreground"
+            )} />
+            <div>
+              <div className="text-xl font-medium mb-2">Drop files here</div>
+              <p className="text-sm text-muted-foreground max-w-sm">
+                or click to select files from your computer
+              </p>
+            </div>
           </div>
           
           <input
@@ -177,23 +185,27 @@ const FileUpload: React.FC<FileUploadProps> = ({
             type="button"
             variant="outline"
             onClick={() => document.getElementById('file-upload')?.click()}
-            className="mt-2"
+            className="transition-all duration-200 hover:scale-105"
           >
             Select Files
           </Button>
         </div>
 
         {files.length > 0 && (
-          <div className="space-y-2">
+          <div className="space-y-4 animate-fade-in">
             {files.map((file, index) => (
               <div
                 key={`${file.name}-${index}`}
-                className="flex items-center justify-between p-3 border rounded-lg bg-card"
+                className={cn(
+                  "flex items-center justify-between p-4 rounded-lg",
+                  "bg-card/50 backdrop-blur-sm border shadow-sm",
+                  "transition-all duration-200 hover:shadow-md hover:scale-[1.01]"
+                )}
               >
-                <div className="flex items-center gap-3">
-                  <File className="h-5 w-5 text-primary" />
+                <div className="flex items-center gap-4">
+                  <File className="h-6 w-6 text-primary" />
                   <div>
-                    <div className="font-medium">{file.name}</div>
+                    <div className="font-medium mb-1">{file.name}</div>
                     <div className="text-xs text-muted-foreground">
                       {(file.size / 1024 / 1024).toFixed(2)} MB
                     </div>
@@ -204,7 +216,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
                   variant="ghost"
                   size="icon"
                   onClick={() => removeFile(file)}
-                  className="text-muted-foreground hover:text-destructive"
+                  className="text-muted-foreground hover:text-destructive transition-colors"
                 >
                   <X className="h-4 w-4" />
                 </Button>
@@ -212,14 +224,23 @@ const FileUpload: React.FC<FileUploadProps> = ({
             ))}
             
             {uploadProgress > 0 && uploadProgress < 100 && (
-              <Progress value={uploadProgress} className="h-2" />
+              <div className="space-y-2 animate-fade-in">
+                <Progress value={uploadProgress} className="h-2" />
+                <p className="text-sm text-muted-foreground text-center">
+                  Uploading... {uploadProgress}%
+                </p>
+              </div>
             )}
           </div>
         )}
 
         <Button 
           type="submit" 
-          className="w-full"
+          className={cn(
+            "w-full transition-all duration-300",
+            "hover:scale-[1.02] disabled:hover:scale-100",
+            files.length > 0 ? "opacity-100" : "opacity-70"
+          )}
           disabled={files.length === 0}
         >
           Create Collection
