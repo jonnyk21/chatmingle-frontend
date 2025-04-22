@@ -1,26 +1,24 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import ChatMessage from './ChatMessage';
+
+import React, { useRef, useEffect, useState } from 'react';
 import ChatInput from './ChatInput';
 import QuickReplies from './QuickReplies';
-import { ChatMessage as ChatMessageType } from '../types/chatTypes';
-import { formatDate, formatTimestamp, generateId, getInitialMessages, getBotResponse, getQuickReplies, fetchOlderMessages } from '../utils/chatUtils';
-import { toast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
-import { ArrowDown, RefreshCcw } from 'lucide-react';
+import { ArrowDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import FileUpload from './FileUpload';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Upload } from 'lucide-react';
+import { toast } from '@/components/ui/use-toast';
+import MessageGroups from './MessageGroups';
+import LoadOlderMessages from './LoadOlderMessages';
+import { useChat } from '../hooks/useChat';
 
 const ChatContainer: React.FC = () => {
-  const [messages, setMessages] = useState<ChatMessageType[]>(getInitialMessages());
-  const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingOlder, setIsLoadingOlder] = useState(false);
-  const [quickReplies, setQuickReplies] = useState(getQuickReplies());
   const [showScrollBottom, setShowScrollBottom] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const { messages, isLoading, isLoadingOlder, quickReplies, handleSendMessage, loadOlderMessages } = useChat();
   
   const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
     messagesEndRef.current?.scrollIntoView({ behavior });
@@ -72,122 +70,10 @@ const ChatContainer: React.FC = () => {
     };
   }, []);
 
-  const handleSendMessage = async (content: string) => {
-    if (isLoading) return;
-    
-    const userMessage: ChatMessageType = {
-      id: generateId(),
-      content,
-      type: 'user',
-      timestamp: new Date(),
-      status: 'sent'
-    };
-    
-    setMessages(prev => [...prev, userMessage]);
-    
-    setQuickReplies([]);
-    
-    setTimeout(() => {
-      setMessages(prev => 
-        prev.map(msg => 
-          msg.id === userMessage.id ? { ...msg, status: 'delivered' } : msg
-        )
-      );
-    }, 500);
-    
-    const typingIndicatorId = generateId();
-    setMessages(prev => [...prev, {
-      id: typingIndicatorId,
-      content: '',
-      type: 'bot',
-      timestamp: new Date(),
-      isTyping: true
-    }]);
-    
-    setIsLoading(true);
-    
-    try {
-      const responseText = await getBotResponse(content);
-      
-      setMessages(prev => 
-        prev.filter(msg => msg.id !== typingIndicatorId).concat({
-          id: generateId(),
-          content: responseText,
-          type: 'bot',
-          timestamp: new Date()
-        })
-      );
-      
-      setTimeout(() => {
-        setMessages(prev => 
-          prev.map(msg => 
-            msg.id === userMessage.id ? { ...msg, status: 'read' } : msg
-          )
-        );
-      }, 1000);
-      
-      setQuickReplies(getQuickReplies());
-    } catch (error) {
-      setMessages(prev => prev.filter(msg => msg.id !== typingIndicatorId));
-      
-      toast({
-        title: "Error",
-        description: "Failed to get response. Please try again.",
-        variant: "destructive"
-      });
-      
-      setMessages(prev => [...prev, {
-        id: generateId(),
-        content: "There was an error processing your request.",
-        type: 'system',
-        timestamp: new Date()
-      }]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleQuickReplySelect = (text: string) => {
-    handleSendMessage(text);
-  };
-
-  const loadOlderMessages = async () => {
-    if (isLoadingOlder) return;
-    
-    setIsLoadingOlder(true);
-    try {
-      const olderMessages = await fetchOlderMessages();
-      
-      setMessages(prev => [...olderMessages, ...prev]);
-      
-      toast({
-        title: "Success",
-        description: "Loaded older messages.",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to load older messages.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsLoadingOlder(false);
-    }
-  };
-
-  const groupedMessages = messages.reduce<Record<string, ChatMessageType[]>>((groups, message) => {
-    const dateKey = formatDate(message.timestamp);
-    if (!groups[dateKey]) {
-      groups[dateKey] = [];
-    }
-    groups[dateKey].push(message);
-    return groups;
-  }, {});
-
-  const handleFileUpload = (files: File[]) => {
+  const handleFileUpload = (files: File[], collectionData: { name: string; description?: string }) => {
     toast({
       title: "Files uploaded",
-      description: `${files.length} files will be processed for context`,
+      description: `${files.length} files will be processed for context in collection "${collectionData.name}"`,
     });
   };
 
@@ -225,40 +111,8 @@ const ChatContainer: React.FC = () => {
         ref={messagesContainerRef}
         className="flex-1 overflow-y-auto py-4 scroll-smooth relative"
       >
-        {isLoadingOlder ? (
-          <div className="flex justify-center py-4">
-            <div className="flex items-center space-x-2">
-              <RefreshCcw size={16} className="animate-spin" />
-              <span className="text-sm">Loading older messages...</span>
-            </div>
-          </div>
-        ) : (
-          <div 
-            className="flex justify-center py-4 cursor-pointer hover:bg-muted/30 rounded-full transition-colors mx-auto w-fit px-4"
-            onClick={loadOlderMessages}
-          >
-            <div className="flex items-center space-x-2">
-              <RefreshCcw size={16} />
-              <span className="text-sm">Load older messages</span>
-            </div>
-          </div>
-        )}
-        
-        <div className="space-y-4">
-          {Object.entries(groupedMessages).map(([date, dateMessages]) => (
-            <div key={date} className="space-y-2">
-              <div className="flex justify-center my-4">
-                <div className="px-4 py-1 rounded-full bg-muted text-xs font-medium">
-                  {date}
-                </div>
-              </div>
-              {dateMessages.map(message => (
-                <ChatMessage key={message.id} message={message} />
-              ))}
-            </div>
-          ))}
-          <div ref={messagesEndRef} />
-        </div>
+        <LoadOlderMessages isLoading={isLoadingOlder} onLoad={loadOlderMessages} />
+        <MessageGroups messages={messages} messagesEndRef={messagesEndRef} />
         
         {showScrollBottom && (
           <Button
@@ -275,7 +129,7 @@ const ChatContainer: React.FC = () => {
       <div className="pt-4 pb-2">
         <QuickReplies 
           replies={quickReplies} 
-          onSelect={handleQuickReplySelect} 
+          onSelect={handleSendMessage} 
         />
         <ChatInput 
           onSendMessage={handleSendMessage} 
