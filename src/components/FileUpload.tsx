@@ -1,4 +1,3 @@
-
 import React, { useCallback, useState } from 'react';
 import { Upload, File, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -18,6 +17,8 @@ const formSchema = z.object({
   description: z.string().optional(),
 });
 
+type FormValues = z.infer<typeof formSchema>;
+
 interface FileUploadProps {
   onUpload: (files: File[], collectionData: { name: string; description?: string }) => void;
   maxSize?: number;
@@ -33,7 +34,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
   const [files, setFiles] = useState<File[]>([]);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
@@ -84,7 +85,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
     setFiles(prev => prev.filter(file => file !== fileToRemove));
   };
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = (values: FormValues) => {
     if (files.length === 0) {
       toast({
         title: "No files selected",
@@ -101,7 +102,10 @@ const FileUpload: React.FC<FileUploadProps> = ({
       setUploadProgress(progress);
       if (progress >= 100) {
         clearInterval(interval);
-        onUpload(files, values);
+        onUpload(files, {
+          name: values.name,
+          description: values.description
+        });
       }
     }, 100);
   };
