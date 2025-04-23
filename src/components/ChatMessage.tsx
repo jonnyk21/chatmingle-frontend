@@ -36,16 +36,16 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
       <div 
         ref={messageRef}
         className={cn(
-          "flex items-start mb-6",
+          "flex items-start mb-4 sm:mb-6",
           isUser ? "justify-end" : "justify-start"
         )}
       >
         <div 
           className={cn(
-            "px-4 py-3 rounded-2xl max-w-[80%] shadow-lg transition-all duration-300",
+            "px-3 sm:px-4 py-2 sm:py-3 rounded-2xl max-w-[85%] sm:max-w-[80%] shadow-sm",
             isUser 
-              ? "message-user ml-12 rounded-tr-sm" 
-              : "message-bot rounded-tl-sm mr-12",
+              ? "message-user ml-8 sm:ml-12 rounded-tr-sm" 
+              : "message-bot rounded-tl-sm mr-8 sm:mr-12",
             "animate-pulse-subtle glass"
           )}
         >
@@ -61,8 +61,8 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
 
   if (isSystem) {
     return (
-      <div ref={messageRef} className="flex justify-center my-6 animate-fade-in">
-        <div className="px-6 py-2.5 rounded-full bg-gradient-primary text-primary-foreground text-sm font-medium shadow-lg">
+      <div ref={messageRef} className="flex justify-center my-4 sm:my-6 animate-fade-in px-4">
+        <div className="px-4 sm:px-6 py-2 rounded-full bg-gradient-primary text-primary-foreground text-xs sm:text-sm font-medium shadow-sm">
           {message.content}
         </div>
       </div>
@@ -73,7 +73,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
     <div 
       ref={messageRef}
       className={cn(
-        "flex items-start mb-6 group",
+        "flex items-start mb-4 sm:mb-6 group",
         isUser 
           ? "justify-end animate-slide-in-left" 
           : "justify-start animate-slide-in-right"
@@ -81,18 +81,18 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
     >
       <div 
         className={cn(
-          "relative px-6 py-4 rounded-2xl max-w-[80%] shadow-md",
+          "relative px-4 sm:px-6 py-3 sm:py-4 rounded-2xl max-w-[85%] sm:max-w-[80%]",
           "transition-all duration-300 ease-in-out",
           isUser 
-            ? "message-user ml-12 rounded-tr-sm hover:shadow-lg transform hover:-translate-y-0.5" 
-            : "message-bot rounded-tl-sm mr-12 hover:shadow-lg transform hover:-translate-y-0.5"
+            ? "message-user ml-8 sm:ml-12 rounded-tr-sm hover:shadow-md transform hover:-translate-y-0.5" 
+            : "message-bot rounded-tl-sm mr-8 sm:mr-12 hover:shadow-md transform hover:-translate-y-0.5"
         )}
         onMouseEnter={() => !isUser && setShowReactions(true)}
         onMouseLeave={() => !isUser && setShowReactions(false)}
       >
-        <p className="text-balance leading-relaxed">{message.content}</p>
+        <p className="text-sm sm:text-base text-balance leading-relaxed">{message.content}</p>
         <div className={cn(
-          "text-xs mt-2.5 opacity-70 font-medium flex items-center gap-2",
+          "text-[10px] sm:text-xs mt-2 sm:mt-2.5 opacity-70 font-medium flex items-center gap-2",
           isUser ? "justify-end" : "justify-start"
         )}>
           {formatTimestamp(message.timestamp)}
@@ -120,24 +120,24 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
         )}
 
         {!isUser && showReactions && (
-          <div className="absolute -bottom-12 right-0 flex bg-card/95 shadow-lg rounded-full p-1.5 space-x-1 animate-fade-in backdrop-blur-sm">
+          <div className="absolute -bottom-12 right-0 flex bg-card/95 shadow-sm rounded-full p-1.5 space-x-1 animate-fade-in backdrop-blur-sm">
             <button 
               onClick={() => handleReaction('like')} 
-              className="hover:bg-primary/10 p-2 rounded-full transition-all duration-200 hover:scale-110"
+              className="hover:bg-primary/10 p-1.5 sm:p-2 rounded-full transition-all duration-200 hover:scale-110"
             >
-              <ThumbsUp size={14} className={reaction === 'like' ? "text-primary fill-primary" : ""} />
+              <ThumbsUp size={12} className={reaction === 'like' ? "text-primary fill-primary" : ""} />
             </button>
             <button 
               onClick={() => handleReaction('dislike')} 
-              className="hover:bg-primary/10 p-2 rounded-full transition-all duration-200 hover:scale-110"
+              className="hover:bg-primary/10 p-1.5 sm:p-2 rounded-full transition-all duration-200 hover:scale-110"
             >
-              <ThumbsDown size={14} className={reaction === 'dislike' ? "text-destructive fill-destructive" : ""} />
+              <ThumbsDown size={12} className={reaction === 'dislike' ? "text-destructive fill-destructive" : ""} />
             </button>
             <button 
               onClick={() => handleReaction('love')} 
-              className="hover:bg-primary/10 p-2 rounded-full transition-all duration-200 hover:scale-110"
+              className="hover:bg-primary/10 p-1.5 sm:p-2 rounded-full transition-all duration-200 hover:scale-110"
             >
-              <Heart size={14} className={reaction === 'love' ? "text-primary fill-primary" : ""} />
+              <Heart size={12} className={reaction === 'love' ? "text-primary fill-primary" : ""} />
             </button>
           </div>
         )}
