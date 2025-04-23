@@ -5,9 +5,10 @@ import { cn } from '@/lib/utils';
 
 interface ChatSearchProps {
   onSearch: (query: string) => void;
+  className?: string;
 }
 
-const ChatSearch: React.FC<ChatSearchProps> = ({ onSearch }) => {
+const ChatSearch: React.FC<ChatSearchProps> = ({ onSearch, className }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -24,7 +25,7 @@ const ChatSearch: React.FC<ChatSearchProps> = ({ onSearch }) => {
   };
 
   return (
-    <div className="relative">
+    <div className={cn("relative", className)}>
       {isOpen ? (
         <form onSubmit={handleSearch} className="flex items-center">
           <div className={cn(

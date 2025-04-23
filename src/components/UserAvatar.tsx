@@ -7,9 +7,10 @@ import { cn } from '@/lib/utils';
 interface UserAvatarProps {
   user: UserInfo;
   size?: 'sm' | 'md' | 'lg';
+  className?: string;
 }
 
-const UserAvatar: React.FC<UserAvatarProps> = ({ user, size = 'md' }) => {
+const UserAvatar: React.FC<UserAvatarProps> = ({ user, size = 'md', className }) => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'online': return 'bg-green-500';
@@ -32,7 +33,7 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ user, size = 'md' }) => {
   };
 
   return (
-    <div className="relative">
+    <div className={cn("relative", className)}>
       <Avatar className={cn("ring-2 ring-background", sizeClasses[size])}>
         <AvatarImage src={user.avatar} alt={user.name} />
         <AvatarFallback className="bg-primary/10 text-primary font-medium">
