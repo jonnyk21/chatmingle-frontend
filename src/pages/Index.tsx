@@ -66,7 +66,7 @@ const Index = () => {
             "min-h-screen h-screen flex w-full",
             "bg-background text-foreground overflow-hidden",
             "transition-colors duration-300 ease-in-out",
-            "sm:overflow-auto" // Allow scrolling on mobile
+            "sm:overflow-auto"
           )}
           style={{ 
             height: 'calc(var(--vh, 1vh) * 100)',
@@ -81,8 +81,11 @@ const Index = () => {
                 <div className="flex items-center space-x-3">
                   <SidebarTrigger className="md:mr-2" />
                   <div className="flex items-center">
-                    <UserAvatar user={botInfo} size="sm" className="md:hidden" />
-                    <UserAvatar user={botInfo} size="md" className="hidden md:block" />
+                    <img 
+                      src="/lovable-uploads/92658e59-6697-4cd8-bed2-9b9236c0d427.png" 
+                      alt="SPL Logo" 
+                      className="h-8 w-8 md:h-10 md:w-10 object-contain"
+                    />
                     <div className="ml-3">
                       <h1 className={cn(
                         "text-base md:text-lg font-bold",
@@ -90,7 +93,7 @@ const Index = () => {
                         "bg-clip-text text-transparent",
                         "tracking-tight leading-tight"
                       )}>
-                        ChatBot
+                        Smart Production and Logistics
                       </h1>
                       <div className="text-xs text-muted-foreground font-medium hidden sm:block">AI Assistant</div>
                     </div>
