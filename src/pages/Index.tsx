@@ -82,8 +82,8 @@ const Index = () => {
                   <SidebarTrigger className="md:mr-2" />
                   <div className="flex items-center">
                     <img 
-                      src="/lovable-uploads/92658e59-6697-4cd8-bed2-9b9236c0d427.png" 
-                      alt="SPL Logo" 
+                      src="/lovable-uploads/6b6875ce-964d-43a1-a7db-270e29e5bb55.png" 
+                      alt="Jarvis Logo" 
                       className="h-8 w-8 md:h-10 md:w-10 object-contain"
                     />
                     <div className="ml-3">
@@ -93,7 +93,7 @@ const Index = () => {
                         "bg-clip-text text-transparent",
                         "tracking-tight leading-tight"
                       )}>
-                        Smart Production and Logistics
+                        Jarvis
                       </h1>
                       <div className="text-xs text-muted-foreground font-medium hidden sm:block">AI Assistant</div>
                     </div>

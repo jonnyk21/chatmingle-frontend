@@ -46,13 +46,13 @@ const ChatSidebar: React.FC = () => {
         <div className="p-4 pb-3">
           <div className="flex items-center space-x-2">
             <img 
-              src="/lovable-uploads/92658e59-6697-4cd8-bed2-9b9236c0d427.png" 
-              alt="SPL Logo" 
+              src="/lovable-uploads/6b6875ce-964d-43a1-a7db-270e29e5bb55.png" 
+              alt="Jarvis Logo" 
               className="h-6 w-6 object-contain"
             />
-            <h1 className="text-xl font-semibold bg-gradient-to-r from-primary to-primary-foreground bg-clip-text text-transparent tracking-tight">SPL</h1>
+            <h1 className="text-xl font-semibold bg-gradient-to-r from-primary to-primary-foreground bg-clip-text text-transparent tracking-tight">Jarvis</h1>
           </div>
-          <p className="text-xs text-muted-foreground">Smart Production and Logistics</p>
+          <p className="text-xs text-muted-foreground">AI Assistant</p>
         </div>
       </SidebarHeader>
       
