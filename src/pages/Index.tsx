@@ -63,16 +63,13 @@ const Index = () => {
               <div className="flex items-center justify-between w-full">
                 <div className="flex items-center gap-1">
                   <SidebarTrigger className="mr-0" />
-                  <div className="flex items-center -ml-2">
-                    <img src="/lovable-uploads/6b6875ce-964d-43a1-a7db-270e29e5bb55.png" alt="Jarvis Logo" className="h-8 w-8 md:h-10 md:w-10 object-contain" />
-                    <div className="ml-1">
-                      <h1 className={cn("text-base md:text-lg font-bold", "bg-gradient-to-r from-primary to-primary/80", "bg-clip-text text-transparent", "tracking-tight leading-tight")}>
-                        Jarvis
-                      </h1>
-                      <div className="text-xs text-muted-foreground font-medium hidden sm:block">
-                      </div>
-                    </div>
-                  </div>
+                </div>
+                
+                <div className="flex flex-col items-center space-y-0.5">
+                  <img src="/lovable-uploads/6b6875ce-964d-43a1-a7db-270e29e5bb55.png" alt="Jarvis Logo" className="h-8 w-8 md:h-10 md:w-10 object-contain" />
+                  <h1 className={cn("text-base md:text-lg font-bold", "bg-gradient-to-r from-primary to-primary/80", "bg-clip-text text-transparent", "tracking-tight leading-tight")}>
+                    Jarvis
+                  </h1>
                 </div>
                 
                 <div className="flex items-center gap-1 sm:gap-2 pr-1">
