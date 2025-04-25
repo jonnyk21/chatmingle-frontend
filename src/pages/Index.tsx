@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import ChatContainer from '../components/ChatContainer';
 import ChatSearch from '../components/ChatSearch';
@@ -65,9 +66,18 @@ const Index = () => {
                   <SidebarTrigger className="mr-0" />
                 </div>
                 
-                <div className="flex flex-col items-center space-y-0.5">
-                  <img src="/lovable-uploads/6b6875ce-964d-43a1-a7db-270e29e5bb55.png" alt="Jarvis Logo" className="h-8 w-8 md:h-10 md:w-10 object-contain" />
-                  <h1 className={cn("text-base md:text-lg font-bold", "bg-gradient-to-r from-primary to-primary/80", "bg-clip-text text-transparent", "tracking-tight leading-tight")}>
+                <div className="flex items-center space-x-2">
+                  <img 
+                    src="/lovable-uploads/6b6875ce-964d-43a1-a7db-270e29e5bb55.png" 
+                    alt="Jarvis Logo" 
+                    className="h-8 w-8 md:h-10 md:w-10 object-contain" 
+                  />
+                  <h1 className={cn(
+                    "text-base md:text-lg font-bold", 
+                    "bg-gradient-to-r from-primary to-primary/80", 
+                    "bg-clip-text text-transparent", 
+                    "tracking-tight leading-tight"
+                  )}>
                     Jarvis
                   </h1>
                 </div>
@@ -111,3 +121,4 @@ const Index = () => {
 };
 
 export default Index;
+
