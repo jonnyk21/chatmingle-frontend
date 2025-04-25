@@ -59,13 +59,13 @@ const Index = () => {
           <ChatSidebar />
           <SidebarRail className="bg-border/10 dark:bg-border/20" />
           <SidebarInset className="px-0 w-full">
-            <header className="py-2 sm:py-3 px-3 sm:px-6 border-b border-border/40 backdrop-blur-md bg-background/80 glass sticky top-0 z-50">
-              <div className="flex items-center justify-between max-w-6xl mx-auto">
-                <div className="flex items-center space-x-2">
+            <header className="py-2 sm:py-3 px-2 border-b border-border/40 backdrop-blur-md bg-background/80 glass sticky top-0 z-50">
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center gap-1">
                   <SidebarTrigger className="mr-0" />
-                  <div className="flex items-center -ml-1">
+                  <div className="flex items-center -ml-2">
                     <img src="/lovable-uploads/6b6875ce-964d-43a1-a7db-270e29e5bb55.png" alt="Jarvis Logo" className="h-8 w-8 md:h-10 md:w-10 object-contain" />
-                    <div className="ml-2">
+                    <div className="ml-1">
                       <h1 className={cn("text-base md:text-lg font-bold", "bg-gradient-to-r from-primary to-primary/80", "bg-clip-text text-transparent", "tracking-tight leading-tight")}>
                         Jarvis
                       </h1>
@@ -75,7 +75,7 @@ const Index = () => {
                   </div>
                 </div>
                 
-                <div className="flex items-center space-x-1.5 sm:space-x-2">
+                <div className="flex items-center gap-1 sm:gap-2 pr-1">
                   <div className="hidden sm:block">
                     <ModelSelector />
                   </div>
