@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -78,6 +77,18 @@
     --chatbot-muted: 217 33% 18%;
     --chatbot-user: 290 70% 20%;
     --chatbot-bot: 222 47% 15%;
+
+    /* Enhance sidebar separation in dark mode */
+    --sidebar-background: 222 47% 11%;
+    --sidebar-border: 217 33% 25%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-accent: 217 33% 20%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-muted: 217 33% 18%;
+    --sidebar-muted-foreground: 215 20% 65%;
+    --sidebar-primary: 263 83% 58%;
+    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-ring: 263 83% 58%;
   }
 }
 

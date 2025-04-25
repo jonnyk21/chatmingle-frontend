@@ -11,17 +11,17 @@ import { SidebarProvider, SidebarTrigger, SidebarRail, SidebarInset } from '@/co
 import ChatSidebar from '../components/ChatSidebar';
 import ModelSelector from '../components/ModelSelector';
 import { ModelProvider } from '../contexts/ModelContext';
+
 const Index = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [botInfo] = useState(getBotInfo());
   const [userInfo] = useState(getUserInfo());
+
   useEffect(() => {
-    // Check system preference for dark mode
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     setTheme(prefersDark ? 'dark' : 'light');
 
-    // Handle resize for mobile vh
     const handleResize = () => {
       if (containerRef.current) {
         const vh = window.innerHeight * 0.01;
@@ -34,20 +34,22 @@ const Index = () => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
+
   useEffect(() => {
-    // Apply theme to document
     document.documentElement.classList.toggle('dark', theme === 'dark');
   }, [theme]);
+
   const toggleTheme = () => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
   };
+
   const handleSearch = (query: string) => {
-    // In a real app, this would search through messages
     toast({
       title: "Search",
       description: `Searching for "${query}"...`
     });
   };
+
   return <ModelProvider>
       <SidebarProvider>
         <div ref={containerRef} className={cn("min-h-screen h-screen flex w-full", "bg-background text-foreground overflow-hidden", "transition-colors duration-300 ease-in-out", "sm:overflow-auto")} style={{
@@ -55,20 +57,20 @@ const Index = () => {
         backgroundImage: 'radial-gradient(circle at 100% 0%, hsl(var(--primary) / 0.08) 0%, transparent 70%), radial-gradient(circle at 0% 100%, hsl(var(--chatbot-accent) / 0.06) 0%, transparent 70%)'
       }}>
           <ChatSidebar />
-          <SidebarRail />
+          <SidebarRail className="bg-border/10 dark:bg-border/20" />
           <SidebarInset className="px-0 w-full">
             <header className="py-2 sm:py-3 px-3 sm:px-6 border-b border-border/40 backdrop-blur-md bg-background/80 glass sticky top-0 z-50">
               <div className="flex items-center justify-between max-w-6xl mx-auto">
-                <div className="flex items-center space-x-3">
-                  <SidebarTrigger className="md:mr-2" />
-                  <div className="flex items-center">
+                <div className="flex items-center space-x-2">
+                  <SidebarTrigger className="mr-0" />
+                  <div className="flex items-center -ml-1">
                     <img src="/lovable-uploads/6b6875ce-964d-43a1-a7db-270e29e5bb55.png" alt="Jarvis Logo" className="h-8 w-8 md:h-10 md:w-10 object-contain" />
-                    <div className="ml-3">
+                    <div className="ml-2">
                       <h1 className={cn("text-base md:text-lg font-bold", "bg-gradient-to-r from-primary to-primary/80", "bg-clip-text text-transparent", "tracking-tight leading-tight")}>
                         Jarvis
                       </h1>
                       <div className="text-xs text-muted-foreground font-medium hidden sm:block">
-                    </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -110,4 +112,5 @@ const Index = () => {
       </SidebarProvider>
     </ModelProvider>;
 };
+
 export default Index;
