@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Moon, Sun } from 'lucide-react';
@@ -9,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import KeyboardShortcut from '@/components/ui/KeyboardShortcut';
+import { cn } from '@/lib/utils';
 
 interface ThemeSwitcherProps {
   theme: 'light' | 'dark';

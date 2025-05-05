@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect, useState } from 'react';
 import ChatInput from './ChatInput';
 import QuickReplies from './QuickReplies';
@@ -97,9 +96,7 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ inputRef }) => {
 
       <ScrollArea 
         ref={scrollableRef}
-        className="flex-1 py-4 scroll-smooth relative"
-        viewportRef={scrollableRef}
-        viewportClassName="scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-border/60"
+        className="flex-1 py-4 scroll-smooth relative scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-border/60"
       >
         <LoadOlderMessages isLoading={isLoadingOlder} onLoad={loadOlderMessages} />
         <MessageGroups messages={messages} messagesEndRef={messagesEndRef} />
