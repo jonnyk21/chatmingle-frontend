@@ -113,6 +113,14 @@ export default {
 				'float': {
 					'0%, 100%': { transform: 'translateY(0)' },
 					'50%': { transform: 'translateY(-5px)' }
+				},
+				'bounce-subtle': {
+					'0%, 100%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(-3px)' }
+				},
+				'wiggle': {
+					'0%, 100%': { transform: 'rotate(-2deg)' },
+					'50%': { transform: 'rotate(2deg)' }
 				}
 			},
 			animation: {
@@ -124,11 +132,16 @@ export default {
 				'slide-in-right': 'slide-in-right 0.4s ease-out',
 				'slide-in-left': 'slide-in-left 0.4s ease-out',
 				'pulse-subtle': 'pulse-subtle 2s ease-in-out infinite',
-				'float': 'float 6s ease-in-out infinite'
+				'float': 'float 6s ease-in-out infinite',
+				'bounce-subtle': 'bounce-subtle 2s ease-in-out infinite',
+				'wiggle': 'wiggle 1s ease-in-out infinite'
 			},
 			transitionProperty: {
 				'height': 'height',
 				'spacing': 'margin, padding',
+			},
+			rotate: {
+				'15': '15deg',
 			}
 		}
 	},

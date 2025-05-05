@@ -12,8 +12,13 @@ import { toast } from '@/components/ui/use-toast';
 import MessageGroups from './MessageGroups';
 import LoadOlderMessages from './LoadOlderMessages';
 import { useChat } from '../hooks/useChat';
+import { ScrollArea } from './ui/ScrollArea';
 
-const ChatContainer: React.FC = () => {
+interface ChatContainerProps {
+  inputRef?: React.RefObject<HTMLTextAreaElement>;
+}
+
+const ChatContainer: React.FC<ChatContainerProps> = ({ inputRef }) => {
   const [showScrollBottom, setShowScrollBottom] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -29,30 +34,10 @@ const ChatContainer: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.altKey && e.key === 'n') {
-        const inputElement = document.querySelector('textarea') as HTMLTextAreaElement;
-        if (inputElement) {
-          e.preventDefault();
-          inputElement.focus();
-        }
-      }
-      
-      if (e.altKey && e.key === 's') {
-        e.preventDefault();
-        scrollToBottom();
-      }
-    };
-    
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, []);
+    if (!isLoading) {
+      scrollToBottom();
+    }
+  }, [messages, isLoading]);
 
   useEffect(() => {
     const messagesContainer = messagesContainerRef.current;
@@ -88,8 +73,8 @@ const ChatContainer: React.FC = () => {
       <div className="flex items-center justify-end mb-4">
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="outline" className="gap-2">
-              <Upload className="h-4 w-4" />
+            <Button variant="outline" className="gap-2 rounded-full shadow-sm hover:shadow group transition-all">
+              <Upload className="h-4 w-4 group-hover:-translate-y-0.5 transition-transform" />
               Upload Documents
             </Button>
           </SheetTrigger>
@@ -107,9 +92,10 @@ const ChatContainer: React.FC = () => {
         </Sheet>
       </div>
 
-      <div 
+      <ScrollArea 
         ref={messagesContainerRef}
-        className="flex-1 overflow-y-auto py-4 scroll-smooth relative"
+        className="flex-1 py-4 scroll-smooth relative"
+        viewportClassName="scrollbar-thumb-rounded scrollbar-thin scrollbar-thumb-border/60"
       >
         <LoadOlderMessages isLoading={isLoadingOlder} onLoad={loadOlderMessages} />
         <MessageGroups messages={messages} messagesEndRef={messagesEndRef} />
@@ -118,13 +104,13 @@ const ChatContainer: React.FC = () => {
           <Button
             size="icon"
             variant="secondary"
-            className="absolute bottom-4 right-4 rounded-full shadow-lg"
+            className="absolute bottom-4 right-4 rounded-full shadow-lg animate-bounce-subtle"
             onClick={() => scrollToBottom()}
           >
             <ArrowDown size={18} />
           </Button>
         )}
-      </div>
+      </ScrollArea>
       
       <div className="pt-4 pb-2">
         <QuickReplies 
@@ -132,11 +118,18 @@ const ChatContainer: React.FC = () => {
           onSelect={handleSendMessage} 
         />
         <ChatInput 
+          inputRef={inputRef}
           onSendMessage={handleSendMessage} 
           disabled={isLoading} 
         />
         <div className="text-xs text-muted-foreground mt-2 text-center">
-          Keyboard shortcuts: Alt+N to focus input, Alt+S to scroll to bottom
+          Keyboard shortcuts: 
+          <span className="px-1 font-medium text-primary">Alt+N</span> 
+          to focus input, 
+          <span className="px-1 font-medium text-primary">Alt+S</span> 
+          to scroll to bottom, 
+          <span className="px-1 font-medium text-primary">Alt+T</span> 
+          to toggle theme
         </div>
       </div>
     </div>
