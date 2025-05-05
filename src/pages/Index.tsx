@@ -14,6 +14,7 @@ import { ModelProvider } from '../contexts/ModelContext';
 import Header from '../components/Header';
 import useTheme from '../hooks/useTheme';
 import useKeyboardShortcuts from '../hooks/useKeyboardShortcuts';
+import ModelSelector from '../components/ModelSelector';
 
 const Index = () => {
   const containerRef = useRef<HTMLDivElement>(null);
