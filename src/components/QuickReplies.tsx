@@ -14,16 +14,17 @@ const QuickReplies: React.FC<QuickRepliesProps> = ({ replies, onSelect }) => {
   
   return (
     <div className="flex flex-wrap gap-2 py-2 animate-fade-in">
-      {replies.map((reply) => (
+      {replies.map((reply, index) => (
         <button
           key={reply.id}
           onClick={() => onSelect(reply.text)}
+          style={{ animationDelay: `${index * 50}ms` }}
           className={cn(
             "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium",
             "bg-primary/10 text-primary hover:bg-primary/20 transition-colors",
             "border border-primary/20 shadow-sm hover:shadow-md",
             "transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200",
-            "animate-float"
+            "animate-fade-in"
           )}
         >
           <Sparkles size={12} className="text-primary animate-pulse-subtle" />

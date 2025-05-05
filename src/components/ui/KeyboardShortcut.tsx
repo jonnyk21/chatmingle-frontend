@@ -16,7 +16,7 @@ export const KeyboardShortcut: React.FC<KeyboardShortcutProps> = ({
   keyClassName,
 }) => {
   return (
-    <div className={cn("flex items-center gap-1 text-xs", className)}>
+    <div className={cn("flex items-center gap-1.5 text-xs", className)}>
       {description && <span className="text-muted-foreground mr-1">{description}</span>}
       {keys.map((key, index) => (
         <React.Fragment key={index}>
@@ -24,7 +24,8 @@ export const KeyboardShortcut: React.FC<KeyboardShortcutProps> = ({
           <kbd
             className={cn(
               "rounded px-1.5 py-0.5 font-mono text-[10px] font-medium",
-              "border border-border bg-muted shadow-sm",
+              "border border-border bg-muted/50 shadow-sm",
+              "transition-all duration-200 hover:bg-muted/80",
               keyClassName
             )}
           >

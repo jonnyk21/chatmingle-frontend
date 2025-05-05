@@ -12,7 +12,7 @@ import { toast } from '@/components/ui/use-toast';
 import MessageGroups from './MessageGroups';
 import LoadOlderMessages from './LoadOlderMessages';
 import { useChat } from '../hooks/useChat';
-import { ScrollArea } from './ui/ScrollArea';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface ChatContainerProps {
   inputRef?: React.RefObject<HTMLTextAreaElement>;
@@ -22,7 +22,7 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ inputRef }) => {
   const [showScrollBottom, setShowScrollBottom] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const scrollableRef = useRef<HTMLDivElement>(null);
   const { messages, isLoading, isLoadingOlder, quickReplies, handleSendMessage, loadOlderMessages } = useChat();
   
   const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
@@ -40,19 +40,22 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ inputRef }) => {
   }, [messages, isLoading]);
 
   useEffect(() => {
-    const messagesContainer = messagesContainerRef.current;
-    if (!messagesContainer) return;
-    
-    const handleScroll = () => {
-      const { scrollTop, scrollHeight, clientHeight } = messagesContainer;
-      const isNearBottom = scrollHeight - scrollTop - clientHeight < 100;
-      setShowScrollBottom(!isNearBottom);
+    const checkScroll = () => {
+      const scrollEl = scrollableRef.current;
+      if (scrollEl) {
+        const { scrollTop, scrollHeight, clientHeight } = scrollEl;
+        const isNearBottom = scrollHeight - scrollTop - clientHeight < 100;
+        setShowScrollBottom(!isNearBottom);
+      }
     };
     
-    messagesContainer.addEventListener('scroll', handleScroll);
-    return () => {
-      messagesContainer.removeEventListener('scroll', handleScroll);
-    };
+    const scrollEl = scrollableRef.current;
+    if (scrollEl) {
+      scrollEl.addEventListener('scroll', checkScroll);
+      return () => {
+        scrollEl.removeEventListener('scroll', checkScroll);
+      };
+    }
   }, []);
 
   const handleFileUpload = (files: File[], collectionData: { name: string; description?: string }) => {
@@ -73,7 +76,7 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ inputRef }) => {
       <div className="flex items-center justify-end mb-4">
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="outline" className="gap-2 rounded-full shadow-sm hover:shadow group transition-all">
+            <Button variant="outline" className="gap-2 rounded-full shadow-sm hover:shadow-md group transition-all">
               <Upload className="h-4 w-4 group-hover:-translate-y-0.5 transition-transform" />
               Upload Documents
             </Button>
@@ -93,9 +96,10 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ inputRef }) => {
       </div>
 
       <ScrollArea 
-        ref={messagesContainerRef}
+        ref={scrollableRef}
         className="flex-1 py-4 scroll-smooth relative"
-        viewportClassName="scrollbar-thumb-rounded scrollbar-thin scrollbar-thumb-border/60"
+        viewportRef={scrollableRef}
+        viewportClassName="scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-border/60"
       >
         <LoadOlderMessages isLoading={isLoadingOlder} onLoad={loadOlderMessages} />
         <MessageGroups messages={messages} messagesEndRef={messagesEndRef} />

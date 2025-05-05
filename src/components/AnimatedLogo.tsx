@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
 
 interface AnimatedLogoProps {
@@ -15,6 +15,8 @@ const AnimatedLogo: React.FC<AnimatedLogoProps> = ({
   className,
   size = 'md'
 }) => {
+  const [isHovering, setIsHovering] = useState(false);
+  
   const sizeClasses = {
     sm: 'h-6 w-6',
     md: 'h-8 w-8 md:h-10 md:w-10',
@@ -22,26 +24,29 @@ const AnimatedLogo: React.FC<AnimatedLogoProps> = ({
   };
   
   return (
-    <div className={cn(
-      "relative transform transition-all duration-500 hover:scale-110",
-      "after:absolute after:inset-0 after:rounded-full after:shadow-md",
-      "after:opacity-0 hover:after:opacity-100 after:transition-opacity",
-      "group"
-    )}>
+    <div 
+      className={cn(
+        "relative transform transition-all duration-500",
+        "group cursor-pointer"
+      )}
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
+    >
       <img 
         src={src}
         alt={alt}
         className={cn(
-          "object-contain transition-all", 
-          "animate-float filter group-hover:brightness-110",
+          "object-contain transition-all duration-500", 
+          "filter group-hover:brightness-110 z-10 relative",
+          isHovering ? "scale-110" : "scale-100",
           sizeClasses[size],
           className
         )}
       />
       <div className={cn(
-        "absolute inset-0 bg-primary/10 blur-xl rounded-full",
-        "opacity-0 group-hover:opacity-70 transition-opacity",
-        "scale-75"
+        "absolute inset-0 bg-primary/20 blur-xl rounded-full",
+        "transition-all duration-500 z-0",
+        isHovering ? "opacity-100 scale-110" : "opacity-0 scale-75"
       )} />
     </div>
   );
